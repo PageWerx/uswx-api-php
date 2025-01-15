@@ -1,0 +1,4 @@
+<?php
+/*
+ * COMING SOON
+ */
