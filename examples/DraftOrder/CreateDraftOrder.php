@@ -9,8 +9,26 @@
 // We need to require the Composer autoloader in our script, this pulls in dependencies like Guzzle and the USWerx API PHP SDK.
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-// We need to require the config.php file in our script, this sets the API Host and Token for the Site.
-require_once __DIR__ . '/../config.php';
+// Load Config, environment variables, and helper functions
+require_once __DIR__ . '/../../src/config.php';
+
+if (PHP_SAPI === 'cli')
+{
+    if (empty($argv[1])) {
+        die("Please provide a list of SKUs (comma delimited) to add to the DraftOrder as the first argument.\n");
+    } else {
+        $skus = explode(',',$argv[1]);
+        if(count($skus) < 1) {
+            die("Please provide a list of SKUs (comma delimited) to add to the DraftOrder as the first argument.\n");
+        }
+    }
+} else {
+    $draftOrderId = $_GET['draftOrderId'];
+}
+
+
+// DEBUG: Verify env was loaded
+//dd($_ENV);
 
 // We need to import the classes that we will be using in this script.
 // This lets us use the DraftOrder class without needing to use the fully qualified namespace.
@@ -20,8 +38,8 @@ use Pagewerx\UswerxApiPhp\Logging\DefaultLogger;
 
 // We need to initialize the Context Singleton with the Token and Host for the Site. We will also use the DefaultLogger.
 $context = Context::getInstance()->settings(
-    API_TOKEN,
-    API_HOST,
+    $_ENV['USWX_API_TOKEN'] ?? null,
+    $_ENV['USWX_HOST'] ?? null,
     new DefaultLogger(),
     true,
     false,
@@ -30,7 +48,7 @@ $context = Context::getInstance()->settings(
 
 try {
     // We will create a new DraftOrder using the DraftOrder classes create method and pass in a couple SKUs.
-    $draftOrder = DraftOrder::create(['line_items'=>['EDP_495', 'EDP_420']]);
+    $draftOrder = DraftOrder::create(['line_items'=>$skus]);
     echo "Draft order \"{$draftOrder->getName()}\" created with Shopify ID: {$draftOrder->getShopId()}\n";
 
     // We will output the DraftOrder's Invoice URL to the console.

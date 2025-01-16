@@ -4,4 +4,3 @@
 .env
 /vendor/
 /logs/*
-/examples/config.php
