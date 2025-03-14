@@ -16,6 +16,7 @@ if (PHP_SAPI === 'cli')
 {
     if (empty($argv[1])) {
         echo "Please provide a Shopify Draft Order ID as the first argument.\n";
+        exit;
     } else {
         $draftOrderId = $argv[1];
     }
@@ -28,17 +29,12 @@ if (PHP_SAPI === 'cli')
 use Pagewerx\UswerxApiPhp\Context;
 use Pagewerx\UswerxApiPhp\DraftOrder\DraftOrder;
 use Pagewerx\UswerxApiPhp\Logging\DefaultLogger;
+use Pagewerx\UswerxApiPhp\UswerxApi;
 use Symfony\Component\Dotenv\Dotenv;
 
-// We need to initialize the Context Singleton with the Token and Host for the Site. We will also use the DefaultLogger.
-$context = Context::getInstance()->settings(
-    $_ENV['USWX_API_TOKEN'] ?? null,
-    $_ENV['USWX_HOST'] ?? null,
-    new DefaultLogger(),
-    true,
-    false,
-    null
-);
+// Initialize the API which inits/obtains the context singleton
+$api = UswerxApi::init(__DIR__ . '/../../.env'); // We don't need to capture the API object to use the API, but there will be helper methods eventually.
+
 
 try {
     // We will retrieve a DraftOrder by its Shopify ID using the DraftOrder classes retrieve method.
