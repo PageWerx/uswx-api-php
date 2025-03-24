@@ -72,8 +72,8 @@ class DraftOrder
             'api_response_string'   =>      $response,
             'api_response_object'   =>      $responseObj
         ]);
-        $draft->DraftOrder = $responseObj;
-        $draft->shopData = $draft->getDraftOrderData()->shop_data;
+        $draft->DraftOrder = $responseObj->data;
+        $draft->shopData = $draft->getDraftOrderData();
         $draft->shopId = $draft->shopData->id;
         $draft->name = $draft->shopData->name;
         $draft->uswerxId = $draft->DraftOrder->id;
@@ -143,7 +143,7 @@ class DraftOrder
      */
     public function getDraftOrderData(): ?object
     {
-        return $this->DraftOrder->data ?? null;
+        return $this->DraftOrder->shop_data ?? null;
     }
 
     public function getInvoiceUrl(): string
