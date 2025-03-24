@@ -1,6 +1,6 @@
 {
     "name": "pagewerx/uswerx-api-php",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "license": "MIT",
     "description": "API Library Package for integrating with USWerx",
     "type": "library",
