@@ -64,15 +64,17 @@ class Order
             'api_response_object' => $responseObj,
         ]);
 
-        $order->Order = $responseObj;
+        if ($responseObj->success) {
+            $order->Order = $responseObj->data;
+        }
 
-        if (!empty($responseObj->data->shop_data)) {
+        if (!empty($order->Order->shop_data)) {
             $order->shopData = $responseObj->data->shop_data;
             $order->shopId = $order->shopData->id ?? null;
             $order->name = $order->shopData->name ?? null;
         }
 
-        $order->uswerxId = $responseObj->data->id ?? null;
+        $order->uswerxId = $order->Order->id ?? null;
 
         return $order;
     }
@@ -211,6 +213,9 @@ class Order
 
     public function getUswerxId(): ?int
     {
+        if (empty($this->uswerxId)) {
+            $this->uswerxId = $this->Order->data->id ?? null;
+        }
         return $this->uswerxId;
     }
 
